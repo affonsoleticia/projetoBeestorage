@@ -1,13 +1,13 @@
 package com.beestorageproject.techafropretas.controller;
 
 import java.util.List;
+import java.util.Optional;
 
-import jakarta.persistence.Entity;
 import jakarta.validation.Valid;
 
 import com.beestorageproject.techafropretas.model.CategoriaModel;
 import com.beestorageproject.techafropretas.repository.CategoriaRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Autowired;	
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -18,7 +18,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
 
 @RestController
@@ -27,37 +29,47 @@ import org.springframework.web.bind.annotation.RestController;
 public class CategoriaController {
 	
 	@Autowired
-	private CategoriaRepository repository;
+	private CategoriaRepository categoriaRepository;
 	
 	@GetMapping
 	public ResponseEntity<List<CategoriaModel>> getAll(){
-		return ResponseEntity.ok(repository.findAll());
+		return ResponseEntity.ok(categoriaRepository.findAll());
 	}
 	
 	@GetMapping("/{id}")
 	public ResponseEntity<CategoriaModel> getById(@PathVariable Long id){
-		return repository.findById(id).map(resp -> ResponseEntity.ok(resp))
+		return categoriaRepository.findById(id).map(resp -> ResponseEntity.ok(resp))
 				.orElse(ResponseEntity.notFound().build());
 	}
 	
-	@GetMapping("/categorias/{categoria}")
-	public ResponseEntity<List<CategoriaModel>> getByName(@PathVariable String categoria){
-		return ResponseEntity.ok(repository.findAllByCategoriasContainingIgnoreCase(categoria));
+	@GetMapping("/buscar/{categorias}")
+	public ResponseEntity<List<CategoriaModel>> getByName(@PathVariable String categorias){
+		return ResponseEntity.ok(categoriaRepository.findAllByCategoriasContainingIgnoreCase(categorias));
 	}
 
 	@PostMapping
-	public ResponseEntity<CategoriaModel> postTema(@Valid @RequestBody CategoriaModel categoria) {
-		return ResponseEntity.status(HttpStatus.CREATED).body(repository.save(categoria));
+	public ResponseEntity<CategoriaModel> postTema(@Valid @RequestBody CategoriaModel categorias) {
+		return ResponseEntity.status(HttpStatus.CREATED).body(categoriaRepository.save(categorias));
 	} 
 	
 	@PutMapping
-	public ResponseEntity<CategoriaModel> put (@RequestBody CategoriaModel categoria){
-		return ResponseEntity.ok(repository.save(categoria));
+	public ResponseEntity<CategoriaModel> put (@RequestBody CategoriaModel categorias){
+		if (categoriaRepository.existsById(categorias.getId())) {
+			return ResponseEntity.ok(categoriaRepository.save(categorias));
+		}
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Categoria não existe!", null);
 	}
 	
+	
+	@ResponseStatus(HttpStatus.NO_CONTENT)
 	@DeleteMapping("/{id}")
 	public void delete(@PathVariable Long id) {
-		repository.deleteById(id);
+		Optional<CategoriaModel> categoria = categoriaRepository.findById(id);
+		if (categoria.isEmpty())
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+
+		categoriaRepository.deleteById(id);
+		
 	}
 }
 

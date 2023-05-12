@@ -90,26 +90,22 @@ public class ProdutoController {
         return ResponseEntity.created(uri).body(new SaidaProdutoResponse(saidaProduto));
     }
     
-    @PostMapping
+    @PostMapping("/{id}/categorias")
 	public ResponseEntity<ProdutoModel> PostById(@RequestBody ProdutoModel produto){
-		if (categoriaRepository.existsById(produto.getCategoria().getId()))
+		if (categoriaRepository.existsById(produto.getCategorias().getId()))
 			return ResponseEntity.status(HttpStatus.CREATED).body(repository.save(produto));
 			return ResponseEntity.notFound().build();
 		
 	}
 
-	@PutMapping
+    @PutMapping("/{id}/categorias")
 	public ResponseEntity<ProdutoModel> putPostagem (@Valid @RequestBody ProdutoModel produto){
-
-
 		if (repository.existsById(produto.getId())){
 			
-			if (categoriaRepository.existsById(produto.getCategoria().getId()))
+			if (categoriaRepository.existsById(produto.getCategorias().getId()))
 				return ResponseEntity.status(HttpStatus.OK)
-						.body(repository.save(produto));
-			
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-			
+						.body(repository.save(produto));		
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();	
 		}			
 			
 		return ResponseEntity.status(HttpStatus.NOT_FOUND).build();

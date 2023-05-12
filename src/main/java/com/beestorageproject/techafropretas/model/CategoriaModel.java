@@ -23,12 +23,13 @@ public class CategoriaModel {
 	@GeneratedValue (strategy = GenerationType.IDENTITY)
 	private Long id; 
 	
+
 	@NotBlank (message = "O atributo categorias é obrigatório e não pode utilizar espaços em branco!") 
 	@Size(min = 5, max = 20, message = "O atributo categorias deve conter no mínimo 05 e no máximo 20 caracteres")
-	private String categoria;
+	private String categorias;
 	
-	@OneToMany(mappedBy = "categoria", cascade = CascadeType.REMOVE)
-	@JsonIgnoreProperties("categoria")
+	@OneToMany(mappedBy = "categorias", cascade = CascadeType.REMOVE)
+	@JsonIgnoreProperties("categorias")
 	private List <ProdutoModel> produto;
 	
 	public Long getId() {
@@ -39,13 +40,12 @@ public class CategoriaModel {
 		this.id = id;
 	}
 
-	public String getCategoria() {
-		return categoria;
+	public String getCategorias() {
+		return categorias;
 	}
 
-	public void setCategoria(String categoria) {
-		this.categoria = categoria;
+	public void setCategorias(String categorias) {
+		this.categorias = categorias;
 	}
-	
-	
+
 }

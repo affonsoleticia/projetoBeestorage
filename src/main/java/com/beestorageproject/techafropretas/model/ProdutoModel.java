@@ -56,7 +56,7 @@ public class ProdutoModel {
 	
 	@ManyToOne
 	@JsonIgnoreProperties ("produto")
-	private CategoriaModel categoria;
+	private CategoriaModel categorias;
 	
 	@ManyToOne
 	@JsonIgnoreProperties ("usuario")
@@ -77,12 +77,12 @@ public class ProdutoModel {
         this.estoqueMinimo = estoqueMinimo;
     }
     
-	public CategoriaModel getCategoria() {
-		return categoria;
+	public CategoriaModel getCategorias() {
+		return categorias;
 	}
 
-	public void setCategoria(CategoriaModel categoria) {
-		this.categoria = categoria;
+	public void setCategorias(CategoriaModel categorias) {
+		this.categorias = categorias;
 	}
 
 	public Long getId() {
